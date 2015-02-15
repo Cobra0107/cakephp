@@ -177,23 +177,6 @@ class AssociationTest extends TestCase
      */
     public function testTargetPlugin()
     {
-        Plugin::load('TestPlugin');
-
-        $config = [
-            'className' => 'TestPlugin.Comments',
-            'foreignKey' => 'a_key',
-            'conditions' => ['field' => 'value'],
-            'dependent' => true,
-            'sourceTable' => $this->source,
-            'joinType' => 'INNER'
-        ];
-
-        $this->association = $this->getMock(
-            '\Cake\ORM\Association',
-            ['type', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'],
-            ['ThisAssociationName', $config]
-        );
-
         $table = $this->association->target();
         $this->assertInstanceOf('TestPlugin\Model\Table\CommentsTable', $table);
 
@@ -203,6 +186,26 @@ class AssociationTest extends TestCase
 
         $plugin = TableRegistry::get('TestPlugin.Comments');
         $this->assertSame($table, $plugin, 'Should be the same TestPlugin.Comments object');
+    }
+
+    public function testNoneUniqueAliases()
+    {
+        Plugin::load('TestPlugin');
+        $config = [
+            'className' => 'TestPlugin.Comments',
+            'foreignKey' => 'a_key',
+            'conditions' => ['field' => 'value'],
+            'dependent' => true,
+            'sourceTable' => $this->source,
+            'joinType' => 'INNER'
+        ];
+
+
+        $this->association = $this->getMock(
+            '\Cake\ORM\Association',
+            ['type', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'],
+            ['ThisAssociationName', $config]
+        );
     }
 
     /**
