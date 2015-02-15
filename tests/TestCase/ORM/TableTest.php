@@ -563,6 +563,40 @@ class TableTest extends TestCase
      */
     public function testMultipleAssociationsSameClass()
     {
+        $Categories = new Table(['table' => 'categories']);
+        $options = ['className' => 'Categories'];
+        $Categories->hasMany('Children', $options);
+        $Categories->belongsTo('Parent', $options);
+
+        $this->assertSame('Children', $Categories->Children->alias());
+        $this->assertSame('Children', $Categories->Children->target()->alias());
+        $this->assertSame('categories', $Categories->Children->target()->table());
+
+        $this->assertSame('Parent', $Categories->Parent->alias());
+        $this->assertSame('Parent', $Categories->Parent->target()->alias());
+        $this->assertSame('categories', $Categories->Parent->target()->table());
+    }
+
+    /**
+     * testMultipleAssociationsSameClassOverlap
+     *
+     * @return void
+     */
+    public function testMultipleAssociationsSameClassOverlap()
+    {
+        $Categories = new Table(['table' => 'categories']);
+        $options = ['className' => 'Categories'];
+        $Categories->hasMany('Children', $options);
+        $Categories->belongsTo('Parent', $options);
+
+        $this->assertSame('Children', $Categories->Children->alias());
+        $this->assertSame('Children', $Categories->Children->target()->alias());
+        $this->assertSame('categories', $Categories->Children->target()->table());
+
+        $this->assertSame('Parent', $Categories->Parent->alias());
+        $this->assertSame('Parent', $Categories->Parent->target()->alias());
+        $this->assertSame('categories', $Categories->Parent->target()->table());
+
         $Comments = new Table(['table' => 'comments']);
         $options = ['className' => 'Comments'];
         $Comments->hasMany('Children', $options);
@@ -570,9 +604,11 @@ class TableTest extends TestCase
 
         $this->assertSame('Children', $Comments->Children->alias());
         $this->assertSame('Children', $Comments->Children->target()->alias());
+        $this->assertSame('comments', $Categories->Children->target()->table());
 
         $this->assertSame('Parent', $Comments->Parent->alias());
         $this->assertSame('Parent', $Comments->Parent->target()->alias());
+        $this->assertSame('comments', $Categories->Parent->target()->table());
     }
 
     /**
